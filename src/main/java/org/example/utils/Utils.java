@@ -77,8 +77,10 @@ public class Utils {
             }
         });
 
-        // Set default selection
-        languageBox.setValue(supportedLanguages[0]);
+        // Set default selection if no preserved selected Language available
+        LanguageLabel preservedSelected = RESOURCE_FACTORY.getSelectedLanguage();
+
+        languageBox.setValue(preservedSelected);
 
         // Language change handler
         languageBox.setOnAction(event -> {
@@ -122,10 +124,19 @@ public class Utils {
 
 
     private static void updateLanguageBoxLabels(ObservableResourceFactory RESOURCE_FACTORY, ComboBox<LanguageLabel> languageBox) {
+        // get and set the supported languages from the resource bundle
         ResourceBundle rb = RESOURCE_FACTORY.getResources();
         languageBox.getItems();
-        LanguageLabel selected = languageBox.getValue(); // preserve old selection key
-        String selectedKey = selected != null ? selected.getKey() : "english";
+
+        // preserve old selection key
+        LanguageLabel selected = languageBox.getValue();
+        RESOURCE_FACTORY.setSelectedLanguage(selected);
+
+        //retrieve the preserved LanguageLabel, so that it will be used in another page
+        LanguageLabel preservedSelected = RESOURCE_FACTORY.getSelectedLanguage();
+
+        // preserve old selection key
+        String selectedKey = getSelectedLanguageKey(selected, preservedSelected);
 
         // Rebuild language items with translated labels
         LanguageLabel[] updatedLanguages = {
@@ -136,6 +147,9 @@ public class Utils {
         };
 
         // Temporarily remove event handler to avoid recursion
+        // if not removed, when the language is changed, it will trigger the event handler again,
+        // Another benefit is when we set the setaction = null and  update the languageBox, the UI will be automatically rerender
+
         var handler = languageBox.getOnAction();
         languageBox.setOnAction(null);
 
@@ -160,6 +174,21 @@ public class Utils {
             String result = MessageFormat.format(rb.getString(key), input);
             Platform.runLater(() -> label.setText(result));
         }
+    }
+
+    public static String getSelectedLanguageKey(LanguageLabel selected, LanguageLabel preservedLabel) {
+        if (selected != null) {
+            return selected.getKey();
+        } else if (preservedLabel != null) {
+            return preservedLabel.getKey();
+        } else {
+            return "english";
+        }
+//        return selected != null ? selected.getKey() : preservedLabel != null ? preservedLabel.getKey() : "english";
+    }
+    public static String getselectedLanguageKey(LanguageLabel preservedLabel){
+        String selectedLanguageKey =  getSelectedLanguageKey(null, preservedLabel);
+        return selectedLanguageKey;
     }
 
 }

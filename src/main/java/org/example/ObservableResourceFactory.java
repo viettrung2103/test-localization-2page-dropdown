@@ -3,6 +3,7 @@ package org.example;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.example.model.LanguageLabel;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -12,6 +13,8 @@ public class ObservableResourceFactory {
     private static ObservableResourceFactory instance;
 
     private ObjectProperty<ResourceBundle> resources ;
+
+    private LanguageLabel selectedLanguage;
 
     private ObservableResourceFactory() {
         resources = new SimpleObjectProperty<>();
@@ -26,6 +29,14 @@ public class ObservableResourceFactory {
 
     public ObjectProperty<ResourceBundle> resourcesProperty() {
         return resources ;
+    }
+
+    public void setSelectedLanguage(LanguageLabel selectedLanguage) {
+        this.selectedLanguage = selectedLanguage;
+    }
+
+    public LanguageLabel getSelectedLanguage() {
+        return selectedLanguage;
     }
 
     // get the resource bundle
