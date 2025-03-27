@@ -11,14 +11,19 @@ public class ObservableResourceFactory {
 
     private static ObservableResourceFactory instance;
 
+    private ObjectProperty<ResourceBundle> resources ;
+
+    private ObservableResourceFactory() {
+        resources = new SimpleObjectProperty<>();
+    }
+
     public static ObservableResourceFactory getInstance() {
         if (instance == null){
-            return new ObservableResourceFactory();
+            instance = new ObservableResourceFactory();
         }
         return instance;
     }
 
-    private ObjectProperty<ResourceBundle> resources = new SimpleObjectProperty<>();
     public ObjectProperty<ResourceBundle> resourcesProperty() {
         return resources ;
     }
@@ -31,7 +36,6 @@ public class ObservableResourceFactory {
             setResources(defaultRs);
             return defaultRs;
         }
-
         return resourcesProperty().get();
     }
 
@@ -49,6 +53,10 @@ public class ObservableResourceFactory {
                 return getResources().getString(key);
             }
         };
+    }
+
+    public void getCurrentResourceBundle(){
+
     }
 
 
